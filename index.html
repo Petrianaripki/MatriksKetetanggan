@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Graf Sederhana</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px; }
+        form, table { margin-top: 20px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        table, th, td { border: 1px solid #ccc; text-align: center; padding: 8px; }
+        .button-container { display: flex; gap: 10px; margin-top: 10px; }
+        button { padding: 8px 12px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .reset-button { background-color: #dc3545; }
+        .reset-button:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+
+    <h2>Aplikasi Sederhana dengan Teori Graf (Matriks Ketetanggaan)</h2>
+
+    <form id="form-node">
+        <label>Masukkan Jumlah Node: </label>
+        <input type="number" id="jumlah_node" min="1" max="10" required>
+        <div class="button-container">
+            <button type="button" onclick="generateMatrix()">Buat Matriks</button>
+            <button type="reset" class="reset-button" onclick="resetAll()">Reset</button>
+        </div>
+    </form>
+
+    <div id="matrix-container"></div>
+    <div id="hasil-hubungan"></div>
+
+    <script>
+        function generateMatrix() {
+            const jumlahNode = parseInt(document.getElementById('jumlah_node').value);
+            if (!jumlahNode || jumlahNode < 1 || jumlahNode > 10) return;
+
+            let html = "<h3>Matriks Ketetanggaan</h3>";
+            html += "<table><tr><th></th>";
+            for (let i = 1; i <= jumlahNode; i++) html += `<th>Node ${i}</th>`;
+            html += "</tr>";
+
+            for (let i = 1; i <= jumlahNode; i++) {
+                html += `<tr><td><strong>Node ${i}</strong></td>`;
+                for (let j = 1; j <= jumlahNode; j++) {
+                    html += `<td><input type="number" value="0" min="0" max="100" style="width: 50px;" data-row="${i}" data-col="${j}"></td>`;
+                }
+                html += "</tr>";
+            }
+
+            html += "</table>";
+            html += `<div class="button-container">
+                        <button type="button" onclick="tampilkanHubungan(${jumlahNode})">Tampilkan Hubungan</button>
+                     </div>`;
+            document.getElementById("matrix-container").innerHTML = html;
+            document.getElementById("hasil-hubungan").innerHTML = "";
+        }
+
+        function tampilkanHubungan(jumlahNode) {
+            const inputs = document.querySelectorAll('input[type="number"][data-row]');
+            let hubungan = [];
+
+            inputs.forEach(input => {
+                const i = parseInt(input.getAttribute("data-row"));
+                const j = parseInt(input.getAttribute("data-col"));
+                const value = parseInt(input.value);
+                if (value > 0) {
+                    hubungan.push(`Node ${i} → Node ${j} (Bobot: ${value})`);
+                }
+            });
+
+            let output = "<h3>Hubungan Antar-Node</h3>";
+            if (hubungan.length === 0) {
+                output += "<p>Tidak ada hubungan yang ditemukan.</p>";
+            } else {
+                output += "<ul>";
+                hubungan.forEach(h => {
+                    output += `<li>${h}</li>`;
+                });
+                output += "</ul>";
+            }
+
+            document.getElementById("hasil-hubungan").innerHTML = output;
+        }
+
+        function resetAll() {
+            document.getElementById("matrix-container").innerHTML = "";
+            document.getElementById("hasil-hubungan").innerHTML = "";
+        }
+    </script>
+
+</body>
+</html>
